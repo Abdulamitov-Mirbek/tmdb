@@ -1,0 +1,13 @@
+* {
+  margin: 0;
+  padding: 0;
+} 
+
+ .container {
+  width: 90%;
+  margin: auto;
+}
+
+a {
+  text-decoration: none;
+}
