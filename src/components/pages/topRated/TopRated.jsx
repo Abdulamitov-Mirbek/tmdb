@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaStar, FaCalendar, FaArrowUp, FaFilter } from "react-icons/fa";
-import "./TopRated.css";
+// import "./TopRated.css";
+import MovieCard from "../movieCard/MovieCard";
 
 const API_KEY = "45d1d56fc54beedb6c0207f9ac6cab7c";
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -156,74 +157,9 @@ const TopRated = () => {
         </div>
 
         {/* Movie Grid */}
-        <div className="movie-grid">
-          {movies.map((movie, index) => (
-            <Link
-              to={`/movie/${movie.id}`}
-              key={movie.id}
-              className="movie-card"
-            >
-              <div className="movie-rank">
-                #{(currentPage - 1) * 20 + index + 1}
-              </div>
-              <div className="movie-poster-container">
-                <img
-                  src={
-                    movie.poster_path
-                      ? `${IMAGE_BASE_URL}/w500${movie.poster_path}`
-                      : "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=No+Poster"
-                  }
-                  alt={movie.title}
-                  className="movie-poster"
-                  loading="lazy"
-                />
-                <div className="movie-overlay">
-                  <div className="overlay-content">
-                    <span className="overlay-rating">
-                      <FaStar /> {movie.vote_average.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="movie-info">
-                <h2 className="movie-title">{movie.title}</h2>
-                <div className="movie-meta">
-                  <span className="movie-year">
-                    <FaCalendar />
-                    {movie.release_date
-                      ? new Date(movie.release_date).getFullYear()
-                      : "TBA"}
-                  </span>
-                </div>
-                <div className="movie-rating-container">
-                  <div className="rating-bar-bg">
-                    <div
-                      className="rating-bar-fill"
-                      style={{
-                        width: `${(movie.vote_average / 10) * 100}%`,
-                        backgroundColor: getRatingColor(movie.vote_average),
-                      }}
-                    ></div>
-                  </div>
-                  <div className="rating-details">
-                    <span
-                      className="rating-score"
-                      style={{ color: getRatingColor(movie.vote_average) }}
-                    >
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                    <span className="rating-badge">
-                      {getRatingBadge(movie.vote_average)}
-                    </span>
-                  </div>
-                </div>
-                <p className="movie-overview">
-                  {movie.overview || "No overview available."}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {movies.map((movie, index) => (
+          <MovieCard el={movie, index} />
+        ))};
 
         {/* Pagination */}
         <div className="pagination">
