@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaStar, FaCalendar, FaArrowUp, FaFilter } from "react-icons/fa";
-// import "./TopRated.css";
+import "./TopRated.css";
 import MovieCard from "../movieCard/MovieCard";
 
 const API_KEY = "45d1d56fc54beedb6c0207f9ac6cab7c";

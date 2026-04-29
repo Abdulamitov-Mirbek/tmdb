@@ -1,0 +1,161 @@
+/* MovieDetail.css */
+#movieDetail {
+  min-height: 100vh;
+  padding-top: 80px;
+  position: relative;
+  background-color: rgb(3, 37, 65); /* Fallback color */
+}
+
+.detail-overlay {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(
+    to right,
+    rgba(3, 37, 65, 0.95) 0%,
+    rgba(3, 37, 65, 0.85) 40%,
+    rgba(3, 37, 65, 0.7) 100%
+  );
+  padding: 40px 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.movieDetail {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.movieDetailPoster {
+  flex-shrink: 0;
+  width: 300px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.movieDetailPoster img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.movieDetailText {
+  flex: 1;
+  color: white;
+}
+
+.movieDetailText h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.movieDetailText h2 span {
+  font-weight: 400;
+  opacity: 0.7;
+  font-size: 2rem;
+}
+
+.movie-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+.separator {
+  color: #01b4e4;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 1.3rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 30px;
+  font-weight: 400;
+}
+
+.movieDetailText h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.movieDetailText p {
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
+
+.rating {
+  background: rgba(1, 180, 228, 0.2);
+  border: 1px solid rgba(1, 180, 228, 0.3);
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.rating span {
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .movieDetail {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .movieDetailPoster {
+    width: 250px;
+  }
+
+  .movieDetailText h2 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .movie-meta-info {
+    justify-content: center;
+  }
+
+  .tagline {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .movieDetailPoster {
+    width: 200px;
+  }
+
+  .movieDetailText h2 {
+    font-size: 1.5rem;
+  }
+
+  .movieDetailText h2 span {
+    font-size: 1.2rem;
+  }
+}

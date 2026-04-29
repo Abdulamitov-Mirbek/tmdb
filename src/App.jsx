@@ -5,6 +5,7 @@ import TopRated from "./components/pages/topRated/TopRated";
 import Home from "./components/pages/home/Home";
 import { Route, Routes } from "react-router-dom";
 import Footer from "./components/layout/footer/Footer";
+import MovieDetail from "./components/pages/movieDetail/MovieDetail";
 
 const App = () => {
   let routes = [
@@ -22,6 +23,11 @@ const App = () => {
       id: 3,
       link: "/topRated",
       element: <TopRated />,
+    },
+    {
+      id: 4,
+      link: "/movie/:movieId",
+      element: <MovieDetail />,
     },
   ];
 

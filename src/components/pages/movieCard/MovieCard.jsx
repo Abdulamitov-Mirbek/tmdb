@@ -1,176 +1,123 @@
-import React from 'react';
+// MovieCard.jsx
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  FaStar,
+  FaCalendar,
+  FaPlay,
+  FaInfoCircle,
+  FaLanguage,
+} from "react-icons/fa";
 
 const MovieCard = ({ movie, index }) => {
-    return (
-        <>
-        <div>
-            <div className="popular-grid">
-          {popular.map((movie, index) => (
-            <Link
-              to={`/movie/${movie.id}`}
-              className="movie-card"
-              key={movie.id}
-              onMouseEnter={() => setHoveredMovie(movie.id)}
-              onMouseLeave={() => setHoveredMovie(null)}
-            >
-              {/* Rank Number */}
-              <div className="movie-rank">
-                <span className="rank-number">{index + 1}</span>
-              </div>
+  // Return null if movie is undefined or null
+  if (!movie) {
+    return null;
+  }
 
-              {/* Poster */}
-              <div className="movie-poster-container">
-                <img
-                  src={
-                    movie.poster_path
-                      ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                      : "https://via.placeholder.com/500x750/1a1a2e/b8b0a0?text=No+Poster+Available"
-                  }
-                  alt={`${movie.title} poster`}
-                  className="movie-poster"
-                  loading="lazy"
-                />
+  const getRatingColor = (rating) => {
+    if (!rating) return "#666";
+    if (rating >= 8) return "#4CAF50";
+    if (rating >= 7) return "#8BC34A";
+    if (rating >= 6) return "#FFA726";
+    if (rating >= 5) return "#FF9800";
+    return "#f44336";
+  };
 
-                {/* Rating Overlay */}
-                <div
-                  className={`movie-rating ${getRatingClass(movie.vote_average)}`}
-                >
-                  <FaStar className="rating-icon" />
-                  <div className="rating-content">
-                    <span className="rating-score">
-                      {movie.vote_average?.toFixed(1)}
-                    </span>
-                    <span className="rating-label">
-                      {getRatingLabel(movie.vote_average)}
-                    </span>
-                  </div>
-                </div>
+  const getRatingLabel = (rating) => {
+    if (!rating) return "N/A";
+    if (rating >= 8) return "Excellent";
+    if (rating >= 7) return "Great";
+    if (rating >= 6) return "Good";
+    if (rating >= 5) return "Average";
+    return "Poor";
+  };
 
-                {/* Hover Overlay */}
-                {hoveredMovie === movie.id && (
-                  <div className="movie-overlay">
-                    <div className="overlay-backdrop"></div>
-                    <div className="overlay-content">
-                      <button className="overlay-button primary">
-                        <FaPlay /> View Trailer
-                      </button>
-                      <button className="overlay-button secondary">
-                        <FaInfoCircle /> Details
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Movie Details */}
-              <div className="movie-details">
-                <h2 className="movie-title">{movie.title}</h2>
-
-                <div className="movie-meta">
-                  <span className="meta-item">
-                    <FaCalendar className="meta-icon" />
-                    {movie.release_date
-                      ? new Date(movie.release_date).getFullYear()
-                      : "TBA"}
-                  </span>
-                  <span className="meta-divider"></span>
-                  <span className="meta-item">
-                    <FaLanguage className="meta-icon" />
-                    {movie.original_language?.toUpperCase() || "N/A"}
-                  </span>
-                </div>
-
-                {/* Rating Bar */}
-                <div className="rating-bar-container">
-                  <div className="rating-bar">
-                    <div
-                      className="rating-bar-fill"
-                      style={{
-                        width: `${(movie.vote_average / 10) * 100}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <span className="rating-text">
-                    {movie.vote_average?.toFixed(1)} / 10
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div> 
+  return (
+    <Link to={`/movie/${movie.id}`} className="movie-card">
+      {/* Rank Number */}
+      {index !== undefined && (
+        <div className="movie-rank">
+          <span className="rank-number">{index + 1}</span>
         </div>
-        
-        {/* {TopRated Grid} */}
-         <div className="movie-grid">
-          {movies.map((movie, index) => (
-            <Link
-              to={`/movie/${movie.id}`}
-              key={movie.id}
-              className="movie-card"
-            >
-              <div className="movie-rank">
-                #{(currentPage - 1) * 20 + index + 1}
-              </div>
-              <div className="movie-poster-container">
-                <img
-                  src={
-                    movie.poster_path
-                      ? `${IMAGE_BASE_URL}/w500${movie.poster_path}`
-                      : "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=No+Poster"
-                  }
-                  alt={movie.title}
-                  className="movie-poster"
-                  loading="lazy"
-                />
-                <div className="movie-overlay">
-                  <div className="overlay-content">
-                    <span className="overlay-rating">
-                      <FaStar /> {movie.vote_average.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="movie-info">
-                <h2 className="movie-title">{movie.title}</h2>
-                <div className="movie-meta">
-                  <span className="movie-year">
-                    <FaCalendar />
-                    {movie.release_date
-                      ? new Date(movie.release_date).getFullYear()
-                      : "TBA"}
-                  </span>
-                </div>
-                <div className="movie-rating-container">
-                  <div className="rating-bar-bg">
-                    <div
-                      className="rating-bar-fill"
-                      style={{
-                        width: `${(movie.vote_average / 10) * 100}%`,
-                        backgroundColor: getRatingColor(movie.vote_average),
-                      }}
-                    ></div>
-                  </div>
-                  <div className="rating-details">
-                    <span
-                      className="rating-score"
-                      style={{ color: getRatingColor(movie.vote_average) }}
-                    >
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                    <span className="rating-badge">
-                      {getRatingBadge(movie.vote_average)}
-                    </span>
-                  </div>
-                </div>
-                <p className="movie-overview">
-                  {movie.overview || "No overview available."}
-                </p>
-              </div>
-            </Link>
-          ))}
+      )}
+
+      {/* Poster */}
+      <div className="movie-poster-container">
+        <img
+          src={
+            movie.poster_path
+              ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+              : "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=No+Poster"
+          }
+          alt={movie.title || "Movie poster"}
+          className="movie-poster"
+          loading="lazy"
+        />
+
+        {/* Rating Level Badge */}
+        {movie.vote_average && (
+          <div
+            className="movie-rating-badge"
+            style={{ backgroundColor: getRatingColor(movie.vote_average) }}
+          >
+            <FaStar style={{ color: "#FFD700", fontSize: "12px" }} />
+            <span className="rating-number">
+              {movie.vote_average.toFixed(1)}
+            </span>
+          </div>
+        )}
+
+        {/* Hover Overlay */}
+        <div className="movie-overlay">
+          <div className="overlay-backdrop"></div>
+          <div className="overlay-content">
+            <button className="overlay-button primary">
+              <FaPlay /> Trailer
+            </button>
+            <button className="overlay-button secondary">
+              <FaInfoCircle /> Details
+            </button>
+          </div>
         </div>
-        </>
-    );
+      </div>
+
+      {/* Movie Details */}
+      <div className="movie-details">
+        <h2 className="movie-title">{movie.title || "Untitled"}</h2>
+
+        <div className="movie-meta">
+          <span className="meta-item">
+            <FaCalendar className="meta-icon" />
+            {movie.release_date
+              ? new Date(movie.release_date).getFullYear()
+              : "TBA"}
+          </span>
+          <span className="meta-divider">•</span>
+          <span className="meta-item">
+            <FaLanguage className="meta-icon" />
+            {movie.original_language?.toUpperCase() || "N/A"}
+          </span>
+        </div>
+
+        {/* Rating Bar */}
+        <div className="rating-bar-container">
+          <div className="rating-bar">
+            <div
+              className="rating-bar-fill"
+              style={{
+                width: `${((movie.vote_average || 0) / 10) * 100}%`,
+                backgroundColor: getRatingColor(movie.vote_average),
+              }}
+            ></div>
+          </div>
+          <span className="rating-text">
+            {movie.vote_average?.toFixed(1) || "N/A"} / 10
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
 };
 
 export default MovieCard;
