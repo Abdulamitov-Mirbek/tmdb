@@ -74,7 +74,7 @@ const Header = () => {
     try {
       setSearchLoading(true);
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`
+        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`,
       );
       setSearchResults(response.data.results?.slice(0, 8) || []);
       setSearchLoading(false);
@@ -177,7 +177,10 @@ const Header = () => {
               {searchOpen && (
                 <div className="absolute top-full right-0 mt-2 w-[350px] md:w-[400px] bg-[#032541] border border-white/10 rounded-xl shadow-2xl shadow-black/50 backdrop-blur-xl overflow-hidden">
                   {/* Search Input */}
-                  <form onSubmit={handleSearchSubmit} className="p-3 border-b border-white/5">
+                  <form
+                    onSubmit={handleSearchSubmit}
+                    className="p-3 border-b border-white/5"
+                  >
                     <div className="relative">
                       <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-sm" />
                       <input
@@ -217,7 +220,7 @@ const Header = () => {
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          
+
                           {/* Movie Info */}
                           <div className="flex-1 min-w-0">
                             <h4 className="text-white text-sm font-medium truncate">
@@ -231,7 +234,7 @@ const Header = () => {
                               <span className="text-white/30 text-xs">•</span>
                               <span className="text-white/40 text-xs flex items-center gap-1">
                                 <FaCalendar className="text-[10px]" />
-                                {movie.release_date?.split('-')[0] || 'TBA'}
+                                {movie.release_date?.split("-")[0] || "TBA"}
                               </span>
                             </div>
                           </div>
@@ -239,12 +242,16 @@ const Header = () => {
                       ))
                     ) : searchQuery.length >= 2 ? (
                       <div className="p-6 text-center">
-                        <p className="text-white/40 text-sm">No results found</p>
+                        <p className="text-white/40 text-sm">
+                          No results found
+                        </p>
                       </div>
                     ) : (
                       <div className="p-6 text-center">
                         <FaSearch className="text-white/10 text-3xl mx-auto mb-2" />
-                        <p className="text-white/30 text-sm">Type to search movies</p>
+                        <p className="text-white/30 text-sm">
+                          Type to search movies
+                        </p>
                       </div>
                     )}
                   </div>
