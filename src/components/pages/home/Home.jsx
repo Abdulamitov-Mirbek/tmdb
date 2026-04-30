@@ -1,56 +1,42 @@
 // Home.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
-import {
-  FaPlay,
-  FaStar,
-  FaCalendar,
-  FaArrowRight,
-  FaFire,
-} from "react-icons/fa";
-import "./Home.css";
+import { FaStar, FaCalendar, FaPlay, FaArrowRight } from "react-icons/fa";
+import axios from "axios";
 
 const API_KEY = "45d1d56fc54beedb6c0207f9ac6cab7c";
-const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
 const Home = () => {
   const [heroMovie, setHeroMovie] = useState(null);
   const [popularMovies, setPopularMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
-  const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchMovies = async () => {
       try {
-        const [popularRes, topRatedRes, upcomingRes, trendingRes] =
-          await Promise.all([
-            axios.get(
-              `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`,
-            ),
-            axios.get(
-              `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`,
-            ),
-            axios.get(
-              `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`,
-            ),
-            axios.get(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`),
-          ]);
+        const [popularRes, topRatedRes, trendingRes] = await Promise.all([
+          axios.get(
+            `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`,
+          ),
+          axios.get(
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&language=en-US&page=1`,
+          ),
+          axios.get(
+            `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`,
+          ),
+        ]);
 
         setPopularMovies(popularRes.data.results.slice(0, 12));
         setTopRatedMovies(topRatedRes.data.results.slice(0, 12));
-        setUpcomingMovies(upcomingRes.data.results.slice(0, 12));
         setTrendingMovies(trendingRes.data.results.slice(0, 12));
-
-        // Set a random popular movie as hero
-        const randomIndex = Math.floor(
-          Math.random() * popularRes.data.results.length,
+        setHeroMovie(
+          popularRes.data.results[
+            Math.floor(Math.random() * popularRes.data.results.length)
+          ],
         );
-        setHeroMovie(popularRes.data.results[randomIndex]);
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -58,250 +44,185 @@ const Home = () => {
       }
     };
 
-    fetchAllData();
+    fetchMovies();
   }, []);
 
   if (loading) {
     return (
-      <div className="home-loading">
-        <div className="loading-spinner-large"></div>
-        <p>Loading amazing movies...</p>
+      <div className="min-h-screen bg-[#032541] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-white/10 border-t-[#01b4e4] rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="home">
+    <div className="min-h-screen bg-[#032541]">
       {/* Hero Section */}
       {heroMovie && (
-        <div
-          className="hero-section"
-          style={{
-            backgroundImage: `linear-gradient(rgba(3, 37, 65, 0.8), rgba(3, 37, 65, 0.9)), url(${IMAGE_BASE_URL}/original${heroMovie.backdrop_path})`,
-          }}
-        >
-          <div className="container">
-            <div className="hero-content">
-              <div className="hero-text">
-                <h1 className="hero-title">{heroMovie.title}</h1>
-                <div className="hero-meta">
-                  <span className="hero-rating">
-                    <FaStar className="star-icon" />
-                    {heroMovie.vote_average.toFixed(1)}
-                  </span>
-                  <span className="hero-year">
-                    <FaCalendar />
-                    {heroMovie.release_date?.split("-")[0]}
-                  </span>
-                </div>
-                <p className="hero-overview">{heroMovie.overview}</p>
-                <div className="hero-buttons">
-                  <button className="btn-primary">
-                    <FaPlay /> Watch Trailer
-                  </button>
-                  <Link to={`/movie/${heroMovie.id}`} className="btn-secondary">
-                    More Info
-                  </Link>
-                </div>
+        <div className="relative min-h-[80vh] flex items-center pt-[70px]">
+          <img
+            src={`${IMAGE_BASE_URL}/original${heroMovie.backdrop_path}`}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#032541] via-[#032541]/80 to-transparent"></div>
+
+          <div className="relative max-w-[1400px] mx-auto px-6 w-full">
+            <div className="max-w-lg">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {heroMovie.title}
+              </h1>
+              <div className="flex items-center gap-4 text-white/70 mb-4">
+                <span className="flex items-center gap-1">
+                  <FaStar className="text-yellow-400" />
+                  {heroMovie.vote_average?.toFixed(1)}
+                </span>
+                <span className="flex items-center gap-1">
+                  <FaCalendar />
+                  {heroMovie.release_date?.split("-")[0]}
+                </span>
               </div>
+              <p className="text-white/60 line-clamp-3 mb-6">
+                {heroMovie.overview}
+              </p>
+              <Link
+                to={`/movie/${heroMovie.id}`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#01b4e4] hover:bg-[#0291c9] text-white rounded-full font-semibold transition-all"
+              >
+                <FaPlay /> Watch Now
+              </Link>
             </div>
           </div>
         </div>
       )}
 
       {/* Trending Section */}
-      <section className="movie-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">
-              <FaFire className="section-icon" />
-              Trending This Week
-            </h2>
-            <Link to="/trending" className="view-all">
-              View All <FaArrowRight />
+      <section className="py-12">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white">Trending Now</h2>
+              <p className="text-white/50 text-sm mt-1">What's hot this week</p>
+            </div>
+            <Link
+              to="/trending"
+              className="flex items-center gap-2 text-[#01b4e4] hover:text-[#90cea1] transition-colors text-sm font-medium"
+            >
+              View All <FaArrowRight className="text-xs" />
             </Link>
           </div>
-          <div className="movie-grid">
+
+          {/* SAME GRID AS POPULAR PAGE */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
             {trendingMovies.map((movie) => (
-              <Link
-                to={`/movie/${movie.id}`}
-                key={movie.id}
-                className="movie-card"
-              >
-                <div className="movie-poster">
-                  <img
-                    src={
-                      movie.poster_path
-                        ? `${IMAGE_BASE_URL}/w342${movie.poster_path}`
-                        : "https://via.placeholder.com/342x513/1a1a2e/ffffff?text=No+Poster"
-                    }
-                    alt={movie.title}
-                    loading="lazy"
-                  />
-                  <div className="movie-rating">
-                    <FaStar /> {movie.vote_average.toFixed(1)}
-                  </div>
-                </div>
-                <div className="movie-details">
-                  <h3 className="movie-title">{movie.title}</h3>
-                  <p className="movie-year">
-                    {movie.release_date?.split("-")[0]}
-                  </p>
-                </div>
-              </Link>
+              <MovieCard key={movie.id} movie={movie} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Popular Movies Section */}
-      <section className="movie-section bg-alt">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">🔥 Popular Movies</h2>
-            <Link to="/popular" className="view-all">
-              View All <FaArrowRight />
+      {/* Popular Section */}
+      <section className="py-12 bg-white/[0.02]">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white">Popular Movies</h2>
+              <p className="text-white/50 text-sm mt-1">
+                What everyone is watching
+              </p>
+            </div>
+            <Link
+              to="/popular"
+              className="flex items-center gap-2 text-[#01b4e4] hover:text-[#90cea1] transition-colors text-sm font-medium"
+            >
+              View All <FaArrowRight className="text-xs" />
             </Link>
           </div>
-          <div className="movie-grid">
+
+          {/* SAME GRID AS POPULAR PAGE */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
             {popularMovies.map((movie) => (
-              <Link
-                to={`/movie/${movie.id}`}
-                key={movie.id}
-                className="movie-card"
-              >
-                <div className="movie-poster">
-                  <img
-                    src={
-                      movie.poster_path
-                        ? `${IMAGE_BASE_URL}/w342${movie.poster_path}`
-                        : "https://via.placeholder.com/342x513/1a1a2e/ffffff?text=No+Poster"
-                    }
-                    alt={movie.title}
-                    loading="lazy"
-                  />
-                  <div className="movie-rating">
-                    <FaStar /> {movie.vote_average?.toFixed(1)}
-                  </div>
-                </div>
-                <div className="movie-details">
-                  <h3 className="movie-title">{movie.title}</h3>
-                  <p className="movie-year">
-                    {movie.release_date?.split("-")[0]}
-                  </p>
-                </div>
-              </Link>
+              <MovieCard key={movie.id} movie={movie} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Top Rated Section */}
-      <section className="movie-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">⭐ Top Rated</h2>
-            <Link to="/topRated" className="view-all">
-              View All <FaArrowRight />
+      <section className="py-12">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white">Top Rated</h2>
+              <p className="text-white/50 text-sm mt-1">
+                Highest rated of all time
+              </p>
+            </div>
+            <Link
+              to="/topRated"
+              className="flex items-center gap-2 text-[#01b4e4] hover:text-[#90cea1] transition-colors text-sm font-medium"
+            >
+              View All <FaArrowRight className="text-xs" />
             </Link>
           </div>
-          <div className="movie-grid">
+
+          {/* SAME GRID AS POPULAR PAGE */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
             {topRatedMovies.map((movie) => (
-              <Link
-                to={`/movie/${movie.id}`}
-                key={movie.id}
-                className="movie-card"
-              >
-                <div className="movie-poster">
-                  <img
-                    src={
-                      movie.poster_path
-                        ? `${IMAGE_BASE_URL}/w342${movie.poster_path}`
-                        : "https://via.placeholder.com/342x513/1a1a2e/ffffff?text=No+Poster"
-                    }
-                    alt={movie.title}
-                    loading="lazy"
-                  />
-                  <div className="movie-rating">
-                    <FaStar /> {movie.vote_average?.toFixed(1)}
-                  </div>
-                </div>
-                <div className="movie-details">
-                  <h3 className="movie-title">{movie.title}</h3>
-                  <p className="movie-year">
-                    {movie.release_date?.split("-")[0]}
-                  </p>
-                </div>
-              </Link>
+              <MovieCard key={movie.id} movie={movie} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Upcoming Section */}
-      <section className="movie-section bg-alt">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">🎬 Coming Soon</h2>
-            <Link to="/upcoming" className="view-all">
-              View All <FaArrowRight />
-            </Link>
-          </div>
-          <div className="movie-grid">
-            {upcomingMovies.map((movie) => (
-              <Link
-                to={`/movie/${movie.id}`}
-                key={movie.id}
-                className="movie-card"
-              >
-                <div className="movie-poster">
-                  <img
-                    src={
-                      movie.poster_path
-                        ? `${IMAGE_BASE_URL}/w342${movie.poster_path}`
-                        : "https://via.placeholder.com/342x513/1a1a2e/ffffff?text=No+Poster"
-                    }
-                    alt={movie.title}
-                    loading="lazy"
-                  />
-                  <div className="movie-rating">
-                    <FaCalendar /> {movie.release_date}
-                  </div>
-                </div>
-                <div className="movie-details">
-                  <h3 className="movie-title">{movie.title}</h3>
-                  <p className="movie-year">{movie.release_date}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="stats-section">
-        <div className="container">
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>10M+</h3>
-              <p>Movies</p>
-            </div>
-            <div className="stat-card">
-              <h3>50K+</h3>
-              <p>Reviews</p>
-            </div>
-            <div className="stat-card">
-              <h3>1M+</h3>
-              <p>Users</p>
-            </div>
-            <div className="stat-card">
-              <h3>100+</h3>
-              <p>Genres</p>
-            </div>
           </div>
         </div>
       </section>
     </div>
+  );
+};
+
+// Reusable MovieCard component for Home page
+const MovieCard = ({ movie }) => {
+  return (
+    <Link
+      to={`/movie/${movie.id}`}
+      className="group relative bg-white/[0.03] rounded-xl overflow-hidden border border-white/[0.06] hover:border-[#01b4e4]/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50"
+    >
+      <div className="relative aspect-[2/3] overflow-hidden bg-[#0a1526]">
+        <img
+          src={
+            movie.poster_path
+              ? `https://image.tmdb.org/t/p/w342/${movie.poster_path}`
+              : "https://via.placeholder.com/342x513/1a1a2e/ffffff?text=No+Poster"
+          }
+          alt={movie.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+
+        <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-full">
+          <FaStar className="text-[#FFD700] text-xs" />
+          <span className="text-white text-xs font-semibold">
+            {movie.vote_average?.toFixed(1)}
+          </span>
+        </div>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-[#032541] via-[#032541]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+          <p className="text-white text-xs line-clamp-3">{movie.overview}</p>
+        </div>
+      </div>
+
+      <div className="p-3">
+        <h3 className="text-white text-sm font-semibold truncate">
+          {movie.title}
+        </h3>
+        <div className="flex items-center gap-1 text-white/40 text-xs mt-1">
+          <FaCalendar className="text-[10px]" />
+          <span>
+            {movie.release_date
+              ? new Date(movie.release_date).getFullYear()
+              : "TBA"}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 };
 
